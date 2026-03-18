@@ -24,7 +24,7 @@ workflows:
 
           OUT = os.path.join(os.environ['CM_BUILD_DIR'], 'assets')
           os.makedirs(OUT, exist_ok=True)
-          BG=(10,10,15); PUR=(155,89,182); PUR2=(108,52,131); WHT=(255,255,255)
+          BG=(10,10,15); PUR=(155,89,182); PUR2=(108,52,131)
 
           def grad(draw,w,h,c1,c2):
             for y in range(h):
@@ -43,24 +43,20 @@ workflows:
             draw.ellipse([lx-lr,ly-lr*.55,lx+lr,ly+lr*.55],fill=(70,140,45))
 
           S=1024; img=Image.new('RGB',(S,S)); d=ImageDraw.Draw(img)
-          grad(d,S,S,(26,10,46),BG)
-          d.ellipse([S*.13,S*.09,S*.87,S*.83],fill=(22,8,38))
-          grapes(d,S//2,S//2-int(S*.04),int(S*.32))
-          img.save(f'{OUT}/icon.png'); print('icon.png done')
+          grad(d,S,S,(26,10,46),BG); d.ellipse([S*.13,S*.09,S*.87,S*.83],fill=(22,8,38))
+          grapes(d,S//2,S//2-int(S*.04),int(S*.32)); img.save(f'{OUT}/icon.png')
 
           W,H=1284,2778; img=Image.new('RGB',(W,H)); d=ImageDraw.Draw(img)
-          grad(d,W,H,(26,10,46),BG)
-          cx2,cy2=W//2,H//2-int(H*.06)
+          grad(d,W,H,(26,10,46),BG); cx2,cy2=W//2,H//2-int(H*.06)
           d.ellipse([cx2-int(W*.32),cy2-int(W*.34),cx2+int(W*.32),cy2+int(W*.20)],fill=(22,8,38))
-          grapes(d,cx2,cy2,int(W*.27))
-          img.save(f'{OUT}/splash.png'); print('splash.png done')
+          grapes(d,cx2,cy2,int(W*.27)); img.save(f'{OUT}/splash.png')
 
           S2=432; img=Image.new('RGBA',(S2,S2),(0,0,0,0)); d=ImageDraw.Draw(img)
-          grapes(d,S2//2,S2//2,int(S2*.42)); img.save(f'{OUT}/adaptive-icon.png'); print('adaptive-icon.png done')
+          grapes(d,S2//2,S2//2,int(S2*.42)); img.save(f'{OUT}/adaptive-icon.png')
 
           img=Image.new('RGBA',(48,48),(0,0,0,0)); d=ImageDraw.Draw(img)
-          d.ellipse([0,0,47,47],fill=PUR2); grapes(d,24,23,16)
-          img.save(f'{OUT}/favicon.png'); print('favicon.png done')
+          d.ellipse([0,0,47,47],fill=PUR2); grapes(d,24,23,16); img.save(f'{OUT}/favicon.png')
+          print('All assets generated')
           PYEOF
 
       - name: Expo prebuild
@@ -74,7 +70,7 @@ workflows:
           cd $CM_BUILD_DIR/ios
           pod install --repo-update
 
-      - name: Build iOS app
+      - name: Archive iOS app
         script: |
           cd $CM_BUILD_DIR/ios
 
@@ -88,63 +84,57 @@ workflows:
 
           echo "workspace=$WORKSPACE  scheme=$SCHEME"
 
+          ARCHIVE_PATH="$CM_BUILD_DIR/Juiceify.xcarchive"
+
           xcodebuild \
             -workspace "$WORKSPACE" \
             -scheme "$SCHEME" \
             -configuration Release \
             -sdk iphoneos \
-            -derivedDataPath "$CM_BUILD_DIR/build" \
+            -archivePath "$ARCHIVE_PATH" \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            build
+            archive
 
-      - name: Package IPA
+          echo "=== Archive contents ==="
+          find "$ARCHIVE_PATH" -name "*.app" -type d
+
+      - name: Package IPA from archive
         script: |
           set -e
 
-          echo "=== Searching for .app ==="
-          # The real final .app is always in Release-iphoneos
-          APP_PATH=$(find "$CM_BUILD_DIR/build" \
-            -path "*/Release-iphoneos/*.app" \
-            -type d \
-            | head -1)
+          ARCHIVE_PATH="$CM_BUILD_DIR/Juiceify.xcarchive"
 
-          # Fallback: any .app that contains an executable
+          # .app is always at this exact path inside an xcarchive
+          APP_PATH=$(find "$ARCHIVE_PATH/Products" -name "*.app" -type d | head -1)
+
+          echo "App path: $APP_PATH"
+
           if [ -z "$APP_PATH" ]; then
-            echo "Release-iphoneos not found, trying broader search..."
-            APP_PATH=$(find "$CM_BUILD_DIR/build" \
-              -name "*.app" \
-              -type d \
-              | grep -v ".xctest" \
-              | head -1)
+            echo "ERROR: No .app found in archive. Archive contents:"
+            find "$ARCHIVE_PATH" -type d
+            exit 1
           fi
 
-          echo "Using .app: $APP_PATH"
-          APP_NAME=$(basename "$APP_PATH")
-          echo "App name: $APP_NAME"
-
-          # Verify the .app has an executable inside
+          echo "App contents:"
           ls "$APP_PATH"
 
-          # Build proper IPA structure: Payload/AppName.app
+          # Build IPA: must be zip with Payload/AppName.app at root
           PAYLOAD_DIR="$CM_BUILD_DIR/Payload"
           rm -rf "$PAYLOAD_DIR"
           mkdir -p "$PAYLOAD_DIR"
           cp -r "$APP_PATH" "$PAYLOAD_DIR/"
 
-          echo "=== Payload contents ==="
-          ls -la "$PAYLOAD_DIR/"
-
           mkdir -p "$CM_EXPORT_DIR"
           cd "$CM_BUILD_DIR"
-          zip -r "$CM_EXPORT_DIR/Juiceify.ipa" Payload/
+          zip -r "$CM_EXPORT_DIR/Juiceify.ipa" Payload/ -x "*.DS_Store"
 
-          echo "=== IPA contents (should show Payload/AppName.app) ==="
-          unzip -l "$CM_EXPORT_DIR/Juiceify.ipa" | head -20
+          echo "=== IPA structure ==="
+          unzip -l "$CM_EXPORT_DIR/Juiceify.ipa" | grep "\.app" | head -5
 
-          echo "✅ IPA ready: $CM_EXPORT_DIR/Juiceify.ipa"
+          echo "✅ IPA ready"
 
     artifacts:
       - $CM_EXPORT_DIR/Juiceify.ipa
-      - $CM_BUILD_DIR/build/**/*.dSYM
+      - $CM_BUILD_DIR/Juiceify.xcarchive/**/*.dSYM
