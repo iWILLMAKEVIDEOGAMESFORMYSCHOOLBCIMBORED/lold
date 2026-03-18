@@ -78,18 +78,7 @@ workflows:
         script: |
           cd $CM_BUILD_DIR/ios
 
-          echo "=== Full ios directory listing ==="
-          ls -la
-
-          # Find the .xcworkspace DIRECTORY (not files inside it)
           WORKSPACE=$(find . -maxdepth 1 -name "*.xcworkspace" -type d | head -1)
-          echo "=== Found workspace directory: $WORKSPACE ==="
-
-          # List schemes from that workspace
-          echo "=== Schemes ==="
-          xcodebuild -list -workspace "$WORKSPACE" 2>&1
-
-          # Parse the first scheme
           SCHEME=$(xcodebuild -list -workspace "$WORKSPACE" 2>/dev/null \
             | awk '/Schemes:/,0' \
             | grep -v "Schemes:" \
@@ -97,7 +86,7 @@ workflows:
             | head -1 \
             | sed 's/^[[:space:]]*//')
 
-          echo "=== Building workspace=$WORKSPACE scheme=$SCHEME ==="
+          echo "workspace=$WORKSPACE  scheme=$SCHEME"
 
           xcodebuild \
             -workspace "$WORKSPACE" \
@@ -112,14 +101,49 @@ workflows:
 
       - name: Package IPA
         script: |
-          mkdir -p $CM_EXPORT_DIR
-          APP_PATH=$(find "$CM_BUILD_DIR/build" -name "*.app" | head -1)
-          echo "Found app: $APP_PATH"
-          mkdir -p /tmp/Payload
-          cp -r "$APP_PATH" /tmp/Payload/
-          cd /tmp
+          set -e
+
+          echo "=== Searching for .app ==="
+          # The real final .app is always in Release-iphoneos
+          APP_PATH=$(find "$CM_BUILD_DIR/build" \
+            -path "*/Release-iphoneos/*.app" \
+            -type d \
+            | head -1)
+
+          # Fallback: any .app that contains an executable
+          if [ -z "$APP_PATH" ]; then
+            echo "Release-iphoneos not found, trying broader search..."
+            APP_PATH=$(find "$CM_BUILD_DIR/build" \
+              -name "*.app" \
+              -type d \
+              | grep -v ".xctest" \
+              | head -1)
+          fi
+
+          echo "Using .app: $APP_PATH"
+          APP_NAME=$(basename "$APP_PATH")
+          echo "App name: $APP_NAME"
+
+          # Verify the .app has an executable inside
+          ls "$APP_PATH"
+
+          # Build proper IPA structure: Payload/AppName.app
+          PAYLOAD_DIR="$CM_BUILD_DIR/Payload"
+          rm -rf "$PAYLOAD_DIR"
+          mkdir -p "$PAYLOAD_DIR"
+          cp -r "$APP_PATH" "$PAYLOAD_DIR/"
+
+          echo "=== Payload contents ==="
+          ls -la "$PAYLOAD_DIR/"
+
+          mkdir -p "$CM_EXPORT_DIR"
+          cd "$CM_BUILD_DIR"
           zip -r "$CM_EXPORT_DIR/Juiceify.ipa" Payload/
-          echo "IPA packaged"
+
+          echo "=== IPA contents (should show Payload/AppName.app) ==="
+          unzip -l "$CM_EXPORT_DIR/Juiceify.ipa" | head -20
+
+          echo "✅ IPA ready: $CM_EXPORT_DIR/Juiceify.ipa"
 
     artifacts:
       - $CM_EXPORT_DIR/Juiceify.ipa
