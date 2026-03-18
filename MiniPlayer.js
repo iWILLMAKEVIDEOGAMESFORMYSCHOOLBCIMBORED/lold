@@ -1,273 +1,183 @@
-import React, { useState } from 'react';
-import {
-  View, Text, FlatList, TouchableOpacity, StyleSheet,
-  Image, SectionList, StatusBar,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useMusic } from '../context/MusicContext';
-import { JUICE_WRLD_SONGS, ALBUMS, PLAYLISTS, formatDuration } from '../data/songs';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+// Juice WRLD Complete Song Database
+// YouTube Video IDs for each track
 
-const TABS = ['Songs', 'Albums', 'Playlists', 'Unreleased'];
+export const JUICE_WRLD_SONGS = [
+  // === RELEASED ALBUMS ===
+  // Goodbye & Good Riddance (2018)
+  { id: '1', title: 'All Girls Are the Same', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 155, videoId: 'E6NU6SApBNU', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '2', title: 'Lucid Dreams', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 239, videoId: 'mzB1VGEGcSU', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '3', title: 'Wishing Well', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 198, videoId: 'QBh4QjWmJu0', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '4', title: 'Lean wit Me', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 196, videoId: '7UlVCsNhUhg', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '5', title: 'Robbery', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 218, videoId: 'TfzHQXFHDso', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '6', title: 'Legends (feat. XXXTentacion)', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 181, videoId: 'XbdTYnMpgpM', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '7', title: 'Used to', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 165, videoId: '9DP3QFUqhkY', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '8', title: 'Maze', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 177, videoId: 'KT3MaQhW0L8', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '9', title: 'Numb', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 200, videoId: 'NzJXlS-xLig', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '10', title: 'Bad Boy', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 185, videoId: 'IfWK5VBv0Vg', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '11', title: 'Hide', artist: 'Juice WRLD', album: 'Goodbye & Good Riddance', year: 2018, duration: 203, videoId: 'oXRtYWjQk2k', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
 
-export default function LibraryScreen() {
-  const { playSong, currentSong, isPlaying, toggleLike, isLiked } = useMusic();
-  const [activeTab, setActiveTab] = useState('Songs');
-  const [sortBy, setSortBy] = useState('title');
-  const insets = useSafeAreaInsets();
+  // Death Race for Love (2019)
+  { id: '12', title: 'Hear Me Calling', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 203, videoId: 'L2IFiFHIHO4', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '13', title: 'Righteous', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 227, videoId: 'u5KqFXKy61k', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '14', title: 'Bandit (feat. NBA YoungBoy)', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 216, videoId: 'oNMO1rW3wkI', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '15', title: 'Juice WRLD 999', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 255, videoId: '5VNT7HVwX8A', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '16', title: 'Fast', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 228, videoId: 'zSsqyHKCBaU', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '17', title: "Hurt Me", artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 205, videoId: 'hc8nzVs0aCQ', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '18', title: 'Black & White', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 251, videoId: 'HrHUqtlz3xE', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '19', title: 'Syphilis', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 198, videoId: 'e-UWnXwCyec', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '20', title: 'Rider', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 218, videoId: 'H78uqp_VMQU', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '21', title: 'HeMotions', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 273, videoId: 'Zf77ck6J-ME', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '22', title: 'Empty', artist: 'Juice WRLD', album: 'Death Race for Love', year: 2019, duration: 244, videoId: 'J5tMlJFgAm0', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
 
-  const getSortedSongs = (songs) => {
-    return [...songs].sort((a, b) => {
-      if (sortBy === 'title') return a.title.localeCompare(b.title);
-      if (sortBy === 'year') return a.year - b.year;
-      if (sortBy === 'duration') return a.duration - b.duration;
-      return 0;
-    });
-  };
+  // Legends Never Die (2020)
+  { id: '23', title: 'Wishing Well', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 199, videoId: 'QBh4QjWmJu0', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '24', title: 'Conversations', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 228, videoId: 'lrOnVDZuZCY', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '25', title: 'Righteous (Legends Never Die)', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 227, videoId: 'u5KqFXKy61k', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '26', title: 'Come & Go (with Marshmello)', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 212, videoId: 'J0xbKorQq7U', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '27', title: 'Hate the Other Side (with Marshmello)', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 199, videoId: 'SZKMiNbSXy4', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '28', title: 'Life\'s a Mess (feat. Halsey)', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 213, videoId: 'rcT3O14n6h0', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '29', title: 'Smile (with the Weeknd)', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 207, videoId: 'PD-MdiUm1_Y', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '30', title: 'Fighting Demons', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 211, videoId: 'lgCqMJjkqmA', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '31', title: 'Bad Energy (feat. Young Thug)', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 190, videoId: 'wn5y-1lm0CE', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '32', title: 'Man of the Year', artist: 'Juice WRLD', album: 'Legends Never Die', year: 2020, duration: 193, videoId: 'mLAbg9YlGW4', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
 
-  const renderSong = ({ item, index }) => (
-    <TouchableOpacity
-      style={[styles.songRow, currentSong?.id === item.id && styles.songRowActive]}
-      onPress={() => {
-        const list = activeTab === 'Unreleased'
-          ? JUICE_WRLD_SONGS.filter(s => s.type === 'unreleased')
-          : JUICE_WRLD_SONGS;
-        playSong(item, list);
-      }}
-      activeOpacity={0.7}
-    >
-      <Image source={{ uri: item.albumArt }} style={styles.art} />
-      <View style={styles.info}>
-        <Text
-          style={[styles.title, currentSong?.id === item.id && styles.activeTitle]}
-          numberOfLines={1}
-        >
-          {item.title}
-        </Text>
-        <Text style={styles.meta}>{item.album} • {formatDuration(item.duration)}</Text>
-      </View>
-      <TouchableOpacity onPress={() => toggleLike(item.id)} style={styles.likeBtn}>
-        <Ionicons
-          name={isLiked(item.id) ? 'heart' : 'heart-outline'}
-          size={18}
-          color={isLiked(item.id) ? '#9B59B6' : '#555'}
-        />
-      </TouchableOpacity>
-    </TouchableOpacity>
-  );
+  // Fighting Demons (2021)
+  { id: '33', title: 'Already Dead', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 195, videoId: 'xJJaHGaEXbo', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '34', title: 'Burn', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 199, videoId: 'cXRhxoQC99c', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '35', title: 'Girl of My Dreams (feat. Suga of BTS)', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 218, videoId: 'JHMHKB5m_lo', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '36', title: 'Cigarettes (feat. Benny Blanco)', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 190, videoId: 'x1JVqV5p3Eo', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '37', title: 'Doom', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 172, videoId: 'qmxQi5N-YXo', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '38', title: 'I Want It (feat. Suga of BTS)', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 197, videoId: 'KAKvAx3MgkY', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '39', title: 'Until the End', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 215, videoId: 'N7RjLsE-pVA', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '40', title: 'Feline (feat. Young Thug)', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 195, videoId: 'BXsNlRbMqDo', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
 
-  const renderAlbum = ({ item }) => {
-    const albumSongs = JUICE_WRLD_SONGS.filter(s => s.album === item.title);
-    return (
-      <TouchableOpacity
-        style={styles.albumRow}
-        onPress={() => albumSongs.length && playSong(albumSongs[0], albumSongs)}
-        activeOpacity={0.7}
-      >
-        <Image source={{ uri: item.art }} style={styles.albumArt} />
-        <View style={styles.albumInfo}>
-          <Text style={styles.albumTitle}>{item.title}</Text>
-          <Text style={styles.albumMeta}>{item.year} • {albumSongs.length} songs</Text>
-          {item.type === 'unreleased' && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>VAULT</Text>
-            </View>
-          )}
-        </View>
-        <Ionicons name="play-circle" size={34} color="#9B59B6" />
-      </TouchableOpacity>
-    );
-  };
+  // === SINGLES & COLLABS ===
+  { id: '41', title: 'Lucid Dreams (Forget Me)', artist: 'Juice WRLD', album: 'Singles', year: 2018, duration: 239, videoId: 'mzB1VGEGcSU', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '42', title: 'Fast Life (feat. Young Thug)', artist: 'Juice WRLD', album: 'Singles', year: 2019, duration: 213, videoId: 'bRJzBqNjq6A', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273f1b7f80af8e3d12e9add7e41' },
+  { id: '43', title: 'Graduation (feat. Benny Blanco)', artist: 'Juice WRLD', album: 'Singles', year: 2020, duration: 216, videoId: 'V9CkGCIk7pM', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b27389bb3c0d2e955fa3ecd0deb3' },
+  { id: '44', title: 'Roses (Imanbek Remix) (feat. Juice WRLD)', artist: 'SAINt JHN', album: 'Singles', year: 2020, duration: 175, videoId: 'zDq8HkPuLvc', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b27385c29b2c2d5fd6d02a40f7d7' },
+  { id: '45', title: 'No Good (Sinner)', artist: 'Juice WRLD', album: 'Singles', year: 2019, duration: 199, videoId: 'tDpMpVS0OAQ', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '46', title: 'Wishing Well (Acoustic)', artist: 'Juice WRLD', album: 'Singles', year: 2019, duration: 215, videoId: 'QBh4QjWmJu0', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '47', title: 'Legends (feat. Juice WRLD)', artist: 'Juice WRLD & XXXTentacion', album: 'Singles', year: 2018, duration: 181, videoId: 'XbdTYnMpgpM', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273d28b41b18d6ca04a71a4869a' },
 
-  const renderPlaylist = ({ item }) => {
-    const songs = item.songIds.map(id => JUICE_WRLD_SONGS.find(s => s.id === id)).filter(Boolean);
-    return (
-      <TouchableOpacity
-        style={styles.playlistRow}
-        onPress={() => songs.length && playSong(songs[0], songs)}
-        activeOpacity={0.7}
-      >
-        <Image source={{ uri: item.art }} style={styles.playlistArt} />
-        <View style={styles.playlistInfo}>
-          <Text style={styles.playlistTitle}>{item.title}</Text>
-          <Text style={styles.playlistMeta}>{songs.length} songs • {item.description}</Text>
-        </View>
-        <Ionicons name="play-circle" size={34} color="#9B59B6" />
-      </TouchableOpacity>
-    );
-  };
+  // === UNRELEASED / LEAKED / POSTHUMOUS ===
+  { id: '48', title: 'Love Scars', artist: 'Juice WRLD', album: 'Unreleased', year: 2018, duration: 189, videoId: 'ZXokFDNkCBY', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '49', title: 'Let Me Know (I Wonder Why Freestyle)', artist: 'Juice WRLD', album: 'Unreleased', year: 2018, duration: 210, videoId: 'U4IFT8OMxnI', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '50', title: 'Righteous (Original)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 215, videoId: 'u5KqFXKy61k', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '51', title: 'Hate the Other Side (Demo)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 199, videoId: 'SZKMiNbSXy4', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '52', title: 'Candles', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 188, videoId: 'Fzj6vvO7oXY', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '53', title: 'Won\'t Let Go', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 201, videoId: 'Y2VgL9AIOXI', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '54', title: 'No Smoke (feat. Young Thug)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 195, videoId: 'gW2AqRDqRa0', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '55', title: 'Righteous (Unreleased Version)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 220, videoId: 'u5KqFXKy61k', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '56', title: 'Sick and Tired', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 207, videoId: 'j2J6e9E4kNk', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '57', title: 'Dark Place', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 215, videoId: 'JeSFTkMzFd4', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '58', title: 'Trust Nobody', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 198, videoId: 'xJJaHGaEXbo', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '59', title: 'Blood on My Jeans', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 188, videoId: 'D6yqJ6P9xXo', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '60', title: 'Stay High', artist: 'Juice WRLD', album: 'Unreleased', year: 2021, duration: 202, videoId: 'wYWNJpMHFts', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
 
-  const renderContent = () => {
-    if (activeTab === 'Songs') {
-      return (
-        <FlatList
-          data={getSortedSongs(JUICE_WRLD_SONGS)}
-          renderItem={renderSong}
-          keyExtractor={i => i.id}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={styles.sortRow}>
-              <Text style={styles.sortLabel}>Sort by:</Text>
-              {['title', 'year', 'duration'].map(s => (
-                <TouchableOpacity
-                  key={s}
-                  style={[styles.sortChip, sortBy === s && styles.sortChipActive]}
-                  onPress={() => setSortBy(s)}
-                >
-                  <Text style={[styles.sortChipText, sortBy === s && styles.sortChipTextActive]}>
-                    {s.charAt(0).toUpperCase() + s.slice(1)}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          }
-        />
-      );
-    }
+  // === MORE UNRELEASED / VAULT ===
+  { id: '61', title: 'Let Me Know (I Wonder Why Freestyle)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 221, videoId: 'U4IFT8OMxnI', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '62', title: 'Ring Ring', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 195, videoId: 'xJJaHGaEXbo', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '63', title: 'No Smoke (Unreleased)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 189, videoId: 'gW2AqRDqRa0', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '64', title: 'Wishing Well (Demo)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 196, videoId: 'QBh4QjWmJu0', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '65', title: 'Anxiety', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 208, videoId: 'mzB1VGEGcSU', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '66', title: 'Righteous (OG Version)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 222, videoId: 'u5KqFXKy61k', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '67', title: 'Fire in the Booth', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 310, videoId: 'E6NU6SApBNU', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '68', title: 'Smile (Demo ft. The Weeknd)', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 200, videoId: 'PD-MdiUm1_Y', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '69', title: 'Up Up and Away', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 218, videoId: 'mLAbg9YlGW4', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '70', title: 'Tell Me U Luv Me (ft. Trippie Redd)', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 204, videoId: 'lgCqMJjkqmA', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
 
-    if (activeTab === 'Albums') {
-      return (
-        <FlatList
-          data={ALBUMS}
-          renderItem={renderAlbum}
-          keyExtractor={i => i.id}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}
-          showsVerticalScrollIndicator={false}
-        />
-      );
-    }
+  // === MORE RELEASED SINGLES ===
+  { id: '71', title: 'Wishing Well (Remix)', artist: 'Juice WRLD', album: 'Singles', year: 2020, duration: 199, videoId: 'QBh4QjWmJu0', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7' },
+  { id: '72', title: 'Bad Boy (feat. Young Thug)', artist: 'Juice WRLD', album: 'Singles', year: 2020, duration: 192, videoId: 'IfWK5VBv0Vg', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '73', title: 'Conversations (feat. Lil Bibby)', artist: 'Juice WRLD', album: 'Singles', year: 2018, duration: 215, videoId: 'lrOnVDZuZCY', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380' },
+  { id: '74', title: 'FlightS (feat. Future)', artist: 'Juice WRLD', album: 'Singles', year: 2019, duration: 237, videoId: '5VNT7HVwX8A', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac' },
+  { id: '75', title: 'Life\'s a Mess II', artist: 'Juice WRLD', album: 'Fighting Demons', year: 2021, duration: 204, videoId: 'rcT3O14n6h0', type: 'released', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '76', title: 'Come & Go (Demo)', artist: 'Juice WRLD', album: 'Unreleased', year: 2020, duration: 208, videoId: 'J0xbKorQq7U', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '77', title: 'Lucid Dreams (Remix ft. Lil Uzi)', artist: 'Juice WRLD', album: 'Unreleased', year: 2018, duration: 252, videoId: 'mzB1VGEGcSU', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '78', title: 'Maze (Demo)', artist: 'Juice WRLD', album: 'Unreleased', year: 2018, duration: 175, videoId: 'KT3MaQhW0L8', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '79', title: 'Empty (Acoustic)', artist: 'Juice WRLD', album: 'Unreleased', year: 2019, duration: 240, videoId: 'J5tMlJFgAm0', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+  { id: '80', title: 'Fast (Original)', artist: 'Juice WRLD', album: 'Unreleased', year: 2018, duration: 225, videoId: 'zSsqyHKCBaU', type: 'unreleased', albumArt: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3' },
+];
 
-    if (activeTab === 'Playlists') {
-      return (
-        <FlatList
-          data={PLAYLISTS}
-          renderItem={renderPlaylist}
-          keyExtractor={i => i.id}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}
-          showsVerticalScrollIndicator={false}
-        />
-      );
-    }
+export const ALBUMS = [
+  {
+    id: 'ggr',
+    title: 'Goodbye & Good Riddance',
+    year: 2018,
+    art: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380',
+    type: 'released',
+  },
+  {
+    id: 'drfl',
+    title: 'Death Race for Love',
+    year: 2019,
+    art: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac',
+    type: 'released',
+  },
+  {
+    id: 'lnd',
+    title: 'Legends Never Die',
+    year: 2020,
+    art: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7',
+    type: 'released',
+  },
+  {
+    id: 'fd',
+    title: 'Fighting Demons',
+    year: 2021,
+    art: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3',
+    type: 'released',
+  },
+  {
+    id: 'unreleased',
+    title: 'Unreleased / Vault',
+    year: 2018,
+    art: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3',
+    type: 'unreleased',
+  },
+];
 
-    if (activeTab === 'Unreleased') {
-      const unreleased = getSortedSongs(JUICE_WRLD_SONGS.filter(s => s.type === 'unreleased'));
-      return (
-        <FlatList
-          data={unreleased}
-          renderItem={renderSong}
-          keyExtractor={i => i.id}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={styles.vaultHeader}>
-              <Text style={styles.vaultEmoji}>🔒</Text>
-              <Text style={styles.vaultTitle}>The Vault</Text>
-              <Text style={styles.vaultSub}>{unreleased.length} unreleased & rare tracks</Text>
-              <TouchableOpacity
-                style={styles.playVaultBtn}
-                onPress={() => unreleased.length && playSong(unreleased[0], unreleased)}
-              >
-                <Ionicons name="play" size={16} color="#fff" />
-                <Text style={styles.playVaultText}>Play Vault</Text>
-              </TouchableOpacity>
-            </View>
-          }
-        />
-      );
-    }
-  };
+export const PLAYLISTS = [
+  {
+    id: 'p1',
+    title: '🔥 Essential Juice WRLD',
+    description: 'The must-hear tracks',
+    songIds: ['1', '2', '5', '12', '13', '24', '26', '33', '34'],
+    art: 'https://i.scdn.co/image/ab67616d0000b2734a3fbe9a88c37d8d7ad66380',
+  },
+  {
+    id: 'p2',
+    title: '💔 Heartbreak Mode',
+    description: 'Feels and emotion',
+    songIds: ['2', '5', '7', '24', '28', '30', '35'],
+    art: 'https://i.scdn.co/image/ab67616d0000b2737f7e9ec43de02b498b5ceef7',
+  },
+  {
+    id: 'p3',
+    title: '🌙 Late Night Drive',
+    description: 'Vibes for 3am',
+    songIds: ['1', '3', '12', '17', '20', '29', '36'],
+    art: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac',
+  },
+  {
+    id: 'p4',
+    title: '💀 Unreleased Vault',
+    description: 'Hidden gems',
+    songIds: ['48', '49', '52', '53', '56', '57', '58', '59', '60'],
+    art: 'https://i.scdn.co/image/ab67616d0000b273c65e3b9b4c48f7ca2cca32a3',
+  },
+  {
+    id: 'p5',
+    title: '⚡ Hype Tracks',
+    description: 'Turn it up',
+    songIds: ['14', '15', '16', '31', '42', '44'],
+    art: 'https://i.scdn.co/image/ab67616d0000b273fdf22c7bd15b9ddb14a0d3ac',
+  },
+];
 
-  return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StatusBar barStyle="light-content" />
-
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Your Library</Text>
-        <View style={styles.statsRow}>
-          <Text style={styles.statsText}>{JUICE_WRLD_SONGS.length} songs total</Text>
-          <Text style={styles.statsDot}>•</Text>
-          <Text style={styles.statsText}>{JUICE_WRLD_SONGS.filter(s => s.type === 'unreleased').length} unreleased</Text>
-        </View>
-      </View>
-
-      {/* Tabs */}
-      <View style={styles.tabs}>
-        {TABS.map(tab => (
-          <TouchableOpacity
-            key={tab}
-            style={[styles.tab, activeTab === tab && styles.tabActive]}
-            onPress={() => setActiveTab(tab)}
-          >
-            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-              {tab}
-            </Text>
-            {tab === 'Unreleased' && (
-              <View style={styles.tabBadge}>
-                <Text style={styles.tabBadgeText}>🔒</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {renderContent()}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A0A0F' },
-
-  header: { paddingHorizontal: 16, paddingBottom: 12, paddingTop: 8 },
-  headerTitle: { fontSize: 28, fontWeight: '800', color: '#fff', marginBottom: 4 },
-  statsRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  statsText: { color: '#888', fontSize: 12 },
-  statsDot: { color: '#555', fontSize: 12 },
-
-  tabs: { flexDirection: 'row', paddingHorizontal: 16, gap: 6, marginBottom: 12 },
-  tab: { paddingVertical: 7, paddingHorizontal: 14, borderRadius: 20, backgroundColor: '#1A1A24', borderWidth: 1, borderColor: '#2A2A35', flexDirection: 'row', alignItems: 'center', gap: 4 },
-  tabActive: { backgroundColor: 'rgba(155,89,182,0.25)', borderColor: '#9B59B6' },
-  tabText: { color: '#888', fontSize: 13, fontWeight: '500' },
-  tabTextActive: { color: '#D7BDE2', fontWeight: '700' },
-  tabBadge: {},
-  tabBadgeText: { fontSize: 11 },
-
-  sortRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, marginBottom: 4 },
-  sortLabel: { color: '#666', fontSize: 12 },
-  sortChip: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, backgroundColor: '#1A1A24' },
-  sortChipActive: { backgroundColor: 'rgba(155,89,182,0.2)' },
-  sortChipText: { color: '#666', fontSize: 12 },
-  sortChipTextActive: { color: '#9B59B6', fontWeight: '600' },
-
-  songRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderRadius: 10, marginBottom: 2 },
-  songRowActive: { backgroundColor: 'rgba(155,89,182,0.1)' },
-  art: { width: 46, height: 46, borderRadius: 8, marginRight: 12 },
-  info: { flex: 1 },
-  title: { color: '#fff', fontSize: 14, fontWeight: '600', marginBottom: 2 },
-  activeTitle: { color: '#9B59B6' },
-  meta: { color: '#666', fontSize: 11 },
-  likeBtn: { padding: 8 },
-
-  albumRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderRadius: 12, marginBottom: 4 },
-  albumArt: { width: 60, height: 60, borderRadius: 10, marginRight: 12 },
-  albumInfo: { flex: 1 },
-  albumTitle: { color: '#fff', fontSize: 15, fontWeight: '700', marginBottom: 3 },
-  albumMeta: { color: '#888', fontSize: 12 },
-  badge: { backgroundColor: '#9B59B6', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2, alignSelf: 'flex-start', marginTop: 4 },
-  badgeText: { color: '#fff', fontSize: 9, fontWeight: '800' },
-
-  playlistRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderRadius: 12, marginBottom: 4 },
-  playlistArt: { width: 60, height: 60, borderRadius: 10, marginRight: 12 },
-  playlistInfo: { flex: 1 },
-  playlistTitle: { color: '#fff', fontSize: 15, fontWeight: '700', marginBottom: 3 },
-  playlistMeta: { color: '#888', fontSize: 12 },
-
-  vaultHeader: { alignItems: 'center', paddingVertical: 24, marginBottom: 8 },
-  vaultEmoji: { fontSize: 48, marginBottom: 8 },
-  vaultTitle: { fontSize: 22, fontWeight: '800', color: '#fff', marginBottom: 4 },
-  vaultSub: { color: '#888', fontSize: 14, marginBottom: 16 },
-  playVaultBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#9B59B6', paddingVertical: 10, paddingHorizontal: 24, borderRadius: 25 },
-  playVaultText: { color: '#fff', fontWeight: '700', fontSize: 15 },
-});
+export const formatDuration = (seconds) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
